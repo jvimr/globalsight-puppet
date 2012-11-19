@@ -5,7 +5,7 @@
 class { 'mysql': }
 
 class { 'mysql::server' :
-  config_hash => { 'root_password' => '' }
+  config_hash => { 'root_password' => 'alabama' }
 
 }
 
