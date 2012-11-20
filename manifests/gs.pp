@@ -169,3 +169,10 @@ exec { 'unzip-gs':
   creates => '/home/jboss/src/GlobalSight/',
 }
 
+exec { unzip-gsz':
+  command => 'unzip GlobalSight.zip',
+  cwd => '/home/jboss/src/GlobalSight',
+  require=>Exec['unzip-gs'],
+  creates=> '/home/jboss/src/GlobalSight/jboss/',
+
+}
