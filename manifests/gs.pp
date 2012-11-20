@@ -48,7 +48,10 @@ package { 'postfix':
 #user jboss
 user { 'jboss':
    ensure=> 'present',
-   home=>'/home/jboss'
+   home=>'/home/jboss',
+   managehome => true,
+   shell => '/bin/bash',
+
 }
 
 
@@ -90,7 +93,8 @@ package { 'wget':
 exec { "getopenldap":
       command => "wget ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/openldap-2.4.33.tgz",
       cwd => "/tmp/",
-	path=> '/usr/bin'
+	path=> '/usr/bin',
+	creates => '/tmp/openldap-2.4.33.tgz'
 }
 
 exec { "untaropenldap":
@@ -107,27 +111,61 @@ exec { "./configure-ldap":
       require => Exec["untaropenldap"]
 }
 
-exec { 'make_dep_openldap':
-  command => 'make depend',
-  cwd => "/tmp/openldap-2.4.33/",
-  require => Exec['./configure-ldap'],
+#exec { 'make_dep_openldap':
+#  command => 'make depend',
+#  cwd => "/tmp/openldap-2.4.33/",
+#  require => Exec['./configure-ldap'],
+#  path => '/bin:/usr/bin:/usr/local/bin'
+#}
+
+
+#exec { 'make_openldap':
+#  command => 'make -j2',
+#  timeout => '0',
+#  cwd => "/tmp/openldap-2.4.33/",
+#  require => Exec['make_dep_openldap'],
+#  path => '/bin:/usr/bin:/usr/local/bin'
+#}
+
+
+#exec { 'make_install_openldap':
+#  command => 'make install',
+#  cwd => "/tmp/openldap-2.4.33/",
+#  require => Exec['make_openldap'],
+#  path => '/bin:/usr/bin:/usr/local/bin',
+#  creates => '/usr/local/openldap/bin/ldappasswd'
+#}
+
+
+# 
+
+
+Exec {
   path => '/bin:/usr/bin:/usr/local/bin'
 }
 
+exec { 'mkdir /home/jboss/src':
+  before=>Exec['getGS'],
+  creates => '/home/jboss/src',
+}
 
-exec { 'make_openldap':
-  command => 'make -j2',
-  timeout => '1000',
-  cwd => "/tmp/openldap-2.4.33/",
-  require => Exec['make_dep_openldap'],
-  path => '/bin:/usr/bin:/usr/local/bin'
+exec { 'getGS' :
+  command => "wget 'http://downloads.sourceforge.net/project/globalsight/GlobalSight_Software/GlobalSight_8.3/GlobalSight_Software_Package_Linux_8.3.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fglobalsight%2Ffiles%2FGlobalSight_Software%2FGlobalSight_8.3%2F&ts=1353410819&use_mirror=auto' -O GlobalSight_Software_Package_Linux_8.3.zip",
+  cwd => '/home/jboss/src/',
+  creates => '/home/jboss/src/GlobalSight_Software_Package_Linux_8.3.zip',
+  require => User['jboss'],
 }
 
 
-exec { 'make_install_openldap':
-  command => 'make install',
-  cwd => "/tmp/openldap-2.4.33/",
-  require => Exec['make_openldap'],
-  path => '/bin:/usr/bin:/usr/local/bin'
+package { 'unzip':
+  ensure=> present,
+  before=> Exec['unzip-gs'],
+}
+
+exec { 'unzip-gs':
+  command=> 'unzip GlobalSight_Software_Package_Linux_8.3.zip',
+  cwd => '/home/jboss/src/',
+  require=> Exec['getGS'],
+  creates => '/home/jboss/src/GlobalSight/',
 }
 
