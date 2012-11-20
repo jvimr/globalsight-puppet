@@ -5,6 +5,7 @@ globalsight.com installation puppet script  for ubuntu 12.04
 
 installation steps:
 
+apt-get update
 apt-get install puppet vim git
 
 mkdir src
