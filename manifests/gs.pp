@@ -62,12 +62,12 @@ package { 'openjdk-7-jdk':
 
 package { 'libdb-dev':
   ensure => present,
-
+  before=> Exec['./configure-ldap'],
 }
 
 package { 'make':
  ensure => present,
-
+ before=> Exec['./configure-ldap'],
 }
 
 package { 'gcc':
@@ -150,7 +150,7 @@ exec { 'mkdir /home/jboss/src':
 }
 
 exec { 'getGS' :
-  command => "wget 'http://downloads.sourceforge.net/project/globalsight/GlobalSight_Software/GlobalSight_8.3/GlobalSight_Software_Package_Linux_8.3.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fglobalsight%2Ffiles%2FGlobalSight_Software%2FGlobalSight_8.3%2F&ts=1353410819&use_mirror=auto' -O GlobalSight_Software_Package_Linux_8.3.zip",
+  command => "wget 'http://downloads.sourceforge.net/project/globalsight/GlobalSight_Software/GlobalSight_8.3/GlobalSight_Software_Package_Linux_8.3.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fglobalsight%2Ffiles%2FGlobalSight_Software%2FGlobalSight_8.3%2F&ts=1353410819&use_mirror=auto' -O GlobalSight_Software_Package_Linux_8.3.zip -o /tmp/wget-gs.log",
   cwd => '/home/jboss/src/',
   creates => '/home/jboss/src/GlobalSight_Software_Package_Linux_8.3.zip',
   require => User['jboss'],
