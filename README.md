@@ -12,10 +12,13 @@ and following thread: http://www.globalsight.com/index.php?option=com_fireboard&
 installation steps:
 
 apt-get update
+
 apt-get install puppet vim git
 
 mkdir src
+
 cd src
+
 git clone git://github.com/jvimr/globalsight-puppet.git
 
 puppet module install puppetlabs-mysql
