@@ -111,30 +111,30 @@ exec { "./configure-ldap":
       require => Exec["untaropenldap"]
 }
 
-#exec { 'make_dep_openldap':
-#  command => 'make depend',
-#  cwd => "/tmp/openldap-2.4.33/",
-#  require => Exec['./configure-ldap'],
-#  path => '/bin:/usr/bin:/usr/local/bin'
-#}
+exec { 'make_dep_openldap':
+  command => 'make depend',
+  cwd => "/tmp/openldap-2.4.33/",
+  require => Exec['./configure-ldap'],
+  path => '/bin:/usr/bin:/usr/local/bin'
+}
 
 
-#exec { 'make_openldap':
-#  command => 'make -j2',
-#  timeout => '0',
-#  cwd => "/tmp/openldap-2.4.33/",
-#  require => Exec['make_dep_openldap'],
-#  path => '/bin:/usr/bin:/usr/local/bin'
-#}
+exec { 'make_openldap':
+  command => 'make -j2',
+  timeout => '0',
+  cwd => "/tmp/openldap-2.4.33/",
+  require => Exec['make_dep_openldap'],
+  path => '/bin:/usr/bin:/usr/local/bin'
+}
 
 
-#exec { 'make_install_openldap':
-#  command => 'make install',
-#  cwd => "/tmp/openldap-2.4.33/",
-#  require => Exec['make_openldap'],
-#  path => '/bin:/usr/bin:/usr/local/bin',
-#  creates => '/usr/local/openldap/bin/ldappasswd'
-#}
+exec { 'make_install_openldap':
+  command => 'make install',
+  cwd => "/tmp/openldap-2.4.33/",
+  require => Exec['make_openldap'],
+  path => '/bin:/usr/bin:/usr/local/bin',
+  creates => '/usr/local/openldap/bin/ldappasswd'
+}
 
 
 # 
@@ -169,7 +169,7 @@ exec { 'unzip-gs':
   creates => '/home/jboss/src/GlobalSight/',
 }
 
-exec { unzip-gsz':
+exec { 'unzip-gsz':
   command => 'unzip GlobalSight.zip',
   cwd => '/home/jboss/src/GlobalSight',
   require=>Exec['unzip-gs'],
